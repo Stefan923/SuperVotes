@@ -1,0 +1,23 @@
+name: SuperVotes
+version: 1.0.0
+main: me.Stefan923.SuperVotes.SuperVotes
+description: Provides an powerful voting system.
+softdepend: [PlaceholderAPI, SuperCore]
+depend: [Votifier]
+authors: [Stefan923]
+
+commands:
+  supervotes:
+    description: Shows info about the plugin.
+    aliases: [svotes, supervote, svote]
+  vote:
+    description: List of vote links.
+    aliases: [votes, vot, voturi, voteaza]
+
+permissions:
+  supervotes.admin:
+    description: Access to powerfull commands, like /supervotes reload.
+    default: op
+  supervotes.vote:
+    description: Access to vote command.
+    default: true
