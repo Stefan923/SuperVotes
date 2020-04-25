@@ -35,7 +35,7 @@ public interface VersionUtils extends MessageUtils {
     default String getLatestPluginVersion(Plugin plugin) {
         String version = "";
         try {
-            InputStream inputStream = new URL("https://api.spigotmc.org/legacy/update.php?resource=72224").openStream();
+            InputStream inputStream = new URL("https://api.spigotmc.org/legacy/update.php?resource=77907").openStream();
             Scanner scanner = new Scanner(inputStream);
             if (scanner.hasNext())
                 version = scanner.next();
@@ -46,7 +46,7 @@ public interface VersionUtils extends MessageUtils {
     }
 
     default String getCurrentPluginVersion() {
-        return Bukkit.getPluginManager().getPlugin("UltimateDonors").getDescription().getVersion();
+        return Bukkit.getPluginManager().getPlugin("SuperVotes").getDescription().getVersion();
     }
 
 }
