@@ -34,6 +34,7 @@ public class SettingsManager {
         config.addDefault("Storage.MySQL.User", "yourUser");
         config.addDefault("Storage.MySQL.Password", "yourPassword");
         config.addDefault("Vote.Reward Commands", Arrays.asList("give %playername% diamond 8", "give %playername% grass 32"));
+        config.addDefault("Vote.Offline Rewards", true);
         config.addDefault("Vote Party.Enabled", true);
         config.addDefault("Vote Party.Required Votes", 50);
         config.addDefault("Vote Party.Reward Commands", Arrays.asList("give %playername% diamond 16", "give %playername% grass 64"));
@@ -58,6 +59,7 @@ public class SettingsManager {
         config.set("Storage.MySQL.User", "yourUser");
         config.set("Storage.MySQL.Password", "yourPassword");
         config.set("Vote.Reward Commands", Arrays.asList("give %playername% diamond 8", "give %playername% grass 32"));
+        config.set("Vote.Offline Rewards", true);
         config.set("Vote Party.Enabled", true);
         config.set("Vote Party.Required Votes", 50);
         config.set("Vote Party.Reward Commands", Arrays.asList("give %playername% diamond 16", "give %playername% grass 64"));
