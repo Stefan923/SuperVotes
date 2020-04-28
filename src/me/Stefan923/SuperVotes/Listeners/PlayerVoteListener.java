@@ -62,14 +62,16 @@ public class PlayerVoteListener implements Listener, MessageUtils {
             instance.getUser(player).addVotes();
             processVote(vote);
         } else {
-            if (this.vote.isSet("Vote." + vote.getUsername())) {
-                this.vote.set("Vote." + vote.getUsername(), this.vote.getInt("Vote." + vote.getUsername()) + 1);
-                saveConfig(this.voteFile, this.vote);
-                return;
-            }
+            if (settings.getBoolean("Vote.Offline Rewards")) {
+                if (this.vote.isSet("Vote." + vote.getUsername())) {
+                    this.vote.set("Vote." + vote.getUsername(), this.vote.getInt("Vote." + vote.getUsername()) + 1);
+                    saveConfig(this.voteFile, this.vote);
+                    return;
+                }
 
-            this.vote.set("Vote." + vote.getUsername(), 1);
-            saveConfig(this.voteFile, this.vote);
+                this.vote.set("Vote." + vote.getUsername(), 1);
+                saveConfig(this.voteFile, this.vote);
+            }
         }
     }
 
