@@ -54,7 +54,7 @@ public class LanguageManager implements MessageUtils {
         config.addDefault("General.Invalid Command Syntax", "&8(&3!&8) &cInvalid Syntax or you have no permission!\n&8(&3!&8) &fThe valid syntax is: &b%syntax%");
         config.addDefault("General.Must Be Player", "&8(&3!&8) &cYou must be a player to do this!");
         config.addDefault("General.No Permission", "&8(&3!&8) &cYou need the &4%permission% &cpermission to do that!");
-        config.addDefault("Vote Event.Player Voted", "&8(&3!&8) &b%playername% &fvoted the server! &8(&b%votes%&8/&3%required_votes%&8)");
+        config.addDefault("Vote Event.Player Voted", "&8(&3!&8) &b%playername% &fvoted the server on &b%website%&f! &8(&b%votes%&8/&3%required_votes%&8)");
         config.addDefault("Vote Party.Started", "&8(&3!&8) &bThe vote party has been started!");
         config.addDefault("Vote Party.Starting In", "&8(&3!&8) &fThe vote party will start in &b%timer% seconds&f.");
         config.addDefault("Update Checker.Available", "&8(&3!&8) &fThere is a new version of &bSuperVotes &favailable!\n&8(&3!&8) &fDownload link: &b%link%");

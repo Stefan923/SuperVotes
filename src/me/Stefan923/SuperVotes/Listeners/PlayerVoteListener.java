@@ -45,14 +45,6 @@ public class PlayerVoteListener implements Listener, MessageUtils {
     public void onVotifierEvent(final VotifierEvent event) {
         Vote vote = event.getVote();
         FileConfiguration settings = instance.getSettingsManager().getConfig();
-        if (vote.getUsername() == null || vote.getUsername().length() <= 0) {
-            sendLogger("&fVot primit pe &e" + vote.getServiceName() + "&f fara a fi specificat un nume...");
-        }
-        sendLogger("&fVot primit pe &e" + vote.getServiceName() + "&f de la &a" + vote.getUsername() + "&f.");
-        if (!vote.getUsername().trim().matches("[A-Za-z0-9-_]+") || vote.getUsername().length() > 16) {
-            sendLogger("&cO persoana a votat si a introdus un nume invalid: &4" + vote.getUsername());
-            return;
-        }
 
         if (settings.getStringList("Vote.Reward Commands").isEmpty()) {
             return;
@@ -86,6 +78,7 @@ public class PlayerVoteListener implements Listener, MessageUtils {
 
         Bukkit.getOnlinePlayers().forEach(onlinePlayer -> onlinePlayer.sendMessage(formatAll(prepareMessageByLang(onlinePlayer, "Vote Event.Player Voted")
                 .replace("%playername%", player.getName())
+                .replace("%website%", vote.getServiceName())
                 .replace("%votes%", String.valueOf(votes))
                 .replace("%required_votes%", String.valueOf(settings.getInt("Vote Party.Required Votes"))))));
         giveReward(player);
