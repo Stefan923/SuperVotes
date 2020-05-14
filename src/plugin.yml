@@ -1,5 +1,5 @@
 name: SuperVotes
-version: 1.0.2
+version: 1.0.3
 main: me.Stefan923.SuperVotes.SuperVotes
 description: Provides an powerful voting system.
 softdepend: [PlaceholderAPI, SuperCore]
