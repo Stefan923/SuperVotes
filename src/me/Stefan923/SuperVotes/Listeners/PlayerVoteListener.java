@@ -23,11 +23,13 @@ public class PlayerVoteListener implements Listener, MessageUtils {
 
     private File voteFile;
     private FileConfiguration vote;
+    private FileConfiguration settings;
 
     public PlayerVoteListener(SuperVotes instance) {
         this.instance = instance;
         this.voteFile = new File(instance.getDataFolder(), "vote.yml");
         this.vote = YamlConfiguration.loadConfiguration(this.voteFile);
+        this.settings = instance.getSettingsManager().getConfig();
 
         if (!this.vote.contains("Votes")) {
             this.vote.set("Votes", 0);
@@ -44,15 +46,13 @@ public class PlayerVoteListener implements Listener, MessageUtils {
     @EventHandler(priority = EventPriority.MONITOR)
     public void onVotifierEvent(final VotifierEvent event) {
         Vote vote = event.getVote();
-        FileConfiguration settings = instance.getSettingsManager().getConfig();
 
-        if (settings.getStringList("Vote.Reward Commands").isEmpty()) {
-            return;
-        }
+        int votes = instance.getVotes();
         Player player = Bukkit.getPlayer(vote.getUsername());
+
         if (player != null) {
             instance.getUser(player).addVotes();
-            processVote(vote);
+            processVote(vote, votes);
         } else {
             if (settings.getBoolean("Vote.Offline Rewards")) {
                 if (this.vote.isSet("Vote." + vote.getUsername())) {
@@ -65,16 +65,21 @@ public class PlayerVoteListener implements Listener, MessageUtils {
                 saveConfig(this.voteFile, this.vote);
             }
         }
+
+        if (settings.getBoolean("Vote Party.Enabled") && (player != null || settings.getBoolean("Vote Party.Count Offline Votes"))) {
+            votes += 1;
+            instance.setVotes(votes);
+            this.vote.set("Votes", votes);
+            saveConfig(this.voteFile, this.vote);
+            checkVoteParty(votes);
+        }
     }
 
-    public void processVote(Vote vote) {
-        Player player = Bukkit.getPlayer(vote.getUsername());
-        FileConfiguration settings = instance.getSettingsManager().getConfig();
+    public void processVote(Vote vote, Integer votes) {
+        if (settings.getStringList("Vote.Reward Commands").isEmpty())
+            return;
 
-        int votes = instance.getVotes() + 1;
-        instance.setVotes(votes);
-        this.vote.set("Votes", votes);
-        saveConfig(this.voteFile, this.vote);
+        Player player = Bukkit.getPlayer(vote.getUsername());
 
         Bukkit.getOnlinePlayers().forEach(onlinePlayer -> onlinePlayer.sendMessage(formatAll(prepareMessageByLang(onlinePlayer, "Vote Event.Player Voted")
                 .replace("%playername%", player.getName())
@@ -82,32 +87,32 @@ public class PlayerVoteListener implements Listener, MessageUtils {
                 .replace("%votes%", String.valueOf(votes))
                 .replace("%required_votes%", String.valueOf(settings.getInt("Vote Party.Required Votes"))))));
         giveReward(player);
+    }
 
-        if (settings.getBoolean("Vote Party.Enabled")) {
-            if (votes >= settings.getInt("Vote Party.Required Votes")) {
-                new BukkitRunnable() {
-                    int timer = 30;
+    void checkVoteParty(Integer votes) {
+        if (votes >= settings.getInt("Vote Party.Required Votes")) {
+            new BukkitRunnable() {
+                int timer = 30;
 
-                    @Override
-                    public void run() {
-                        if (timer == 30 || timer == 15 || timer == 5) {
-                            Bukkit.getOnlinePlayers().forEach(onlinePlayer -> onlinePlayer.sendMessage(formatAll(prepareMessageByLang(onlinePlayer, "Vote Party.Starting In").replace("%timer%", String.valueOf(timer)))));
-                        } else if (timer <= 0) {
-                            Bukkit.getOnlinePlayers().forEach(onlinePlayer -> onlinePlayer.sendMessage(formatAll(prepareMessageByLang(onlinePlayer, "Vote Party.Started"))));
-                            Bukkit.getOnlinePlayers().forEach(onlinePlayer -> {
-                                for (String command : instance.getSettingsManager().getConfig().getStringList("Vote Party.Reward Commands")) {
-                                            Bukkit.dispatchCommand(Bukkit.getServer().getConsoleSender(), command.replace("%playername%", onlinePlayer.getName()));
-                                        }
-                             });
-                            cancel();
-                            return;
-                        }
-                        timer--;
+                @Override
+                public void run() {
+                    if (timer == 30 || timer == 15 || timer == 5) {
+                        Bukkit.getOnlinePlayers().forEach(onlinePlayer -> onlinePlayer.sendMessage(formatAll(prepareMessageByLang(onlinePlayer, "Vote Party.Starting In").replace("%timer%", String.valueOf(timer)))));
+                    } else if (timer <= 0) {
+                        Bukkit.getOnlinePlayers().forEach(onlinePlayer -> onlinePlayer.sendMessage(formatAll(prepareMessageByLang(onlinePlayer, "Vote Party.Started"))));
+                        Bukkit.getOnlinePlayers().forEach(onlinePlayer -> {
+                            for (String command : instance.getSettingsManager().getConfig().getStringList("Vote Party.Reward Commands")) {
+                                Bukkit.dispatchCommand(Bukkit.getServer().getConsoleSender(), command.replace("%playername%", onlinePlayer.getName()));
+                            }
+                        });
+                        cancel();
+                        return;
                     }
-                }.runTaskTimerAsynchronously(instance, 0L, 20L);
-                instance.setVotes(0);
-                saveConfig(this.voteFile, this.vote);
-            }
+                    timer--;
+                }
+            }.runTaskTimerAsynchronously(instance, 0L, 20L);
+            instance.setVotes(0);
+            saveConfig(this.voteFile, this.vote);
         }
     }
 
@@ -116,8 +121,12 @@ public class PlayerVoteListener implements Listener, MessageUtils {
         Player player = event.getPlayer();
 
         if (this.vote.contains("Vote." + player.getName())) {
-            int vote = this.vote.getInt("Vote." + player.getName());
-            for (int i = 1; i <= vote; ++i) {
+            int votes = this.vote.getInt("Vote." + player.getName());
+
+            if (settings.getBoolean("Vote.Count Offline Votes"))
+                instance.getUser(player).addVotes(votes);
+
+            for (int i = 0; i < votes; ++i) {
                 giveReward(player);
             }
 

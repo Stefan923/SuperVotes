@@ -34,8 +34,10 @@ public class SettingsManager {
         config.addDefault("Storage.MySQL.User", "yourUser");
         config.addDefault("Storage.MySQL.Password", "yourPassword");
         config.addDefault("Vote.Reward Commands", Arrays.asList("give %playername% diamond 8", "give %playername% grass 32"));
+        config.addDefault("Vote.Count Offline Votes", true);
         config.addDefault("Vote.Offline Rewards", true);
         config.addDefault("Vote Party.Enabled", true);
+        config.addDefault("Vote Party.Count Offline Votes", true);
         config.addDefault("Vote Party.Required Votes", 50);
         config.addDefault("Vote Party.Reward Commands", Arrays.asList("give %playername% diamond 16", "give %playername% grass 64"));
         config.addDefault("Update Checker.Enable.On Plugin Enable", true);

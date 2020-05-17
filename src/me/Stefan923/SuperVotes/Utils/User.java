@@ -49,4 +49,9 @@ public class User {
         this.votes++;
         instance.getDatabase("supervotes_stats").put(player.getName(), "votes", this.votes);
     }
+
+    public void addVotes(Integer votes) {
+        this.votes += votes;
+        instance.getDatabase("supervotes_stats").put(player.getName(), "votes", this.votes);
+    }
 }
