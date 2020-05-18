@@ -99,10 +99,10 @@ public class PlayerVoteListener implements Listener, MessageUtils {
                     if (timer == 30 || timer == 15 || timer == 5) {
                         Bukkit.getOnlinePlayers().forEach(onlinePlayer -> onlinePlayer.sendMessage(formatAll(prepareMessageByLang(onlinePlayer, "Vote Party.Starting In").replace("%timer%", String.valueOf(timer)))));
                     } else if (timer <= 0) {
-                        Bukkit.getOnlinePlayers().forEach(onlinePlayer -> onlinePlayer.sendMessage(formatAll(prepareMessageByLang(onlinePlayer, "Vote Party.Started"))));
                         Bukkit.getOnlinePlayers().forEach(onlinePlayer -> {
+                            onlinePlayer.sendMessage(formatAll(prepareMessageByLang(onlinePlayer, "Vote Party.Started")));
                             for (String command : instance.getSettingsManager().getConfig().getStringList("Vote Party.Reward Commands")) {
-                                Bukkit.dispatchCommand(Bukkit.getServer().getConsoleSender(), command.replace("%playername%", onlinePlayer.getName()));
+                                instance.getServer().getScheduler().runTask(instance, () -> Bukkit.dispatchCommand(Bukkit.getServer().getConsoleSender(), command.replace("%playername%", onlinePlayer.getName())));
                             }
                         });
                         cancel();
