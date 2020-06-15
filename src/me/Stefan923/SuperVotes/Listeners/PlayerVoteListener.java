@@ -50,6 +50,14 @@ public class PlayerVoteListener implements Listener, MessageUtils {
         int votes = instance.getVotes();
         Player player = Bukkit.getPlayer(vote.getUsername());
 
+        if (settings.getBoolean("Vote Party.Enabled") && (player != null || settings.getBoolean("Vote Party.Count Offline Votes"))) {
+            votes += 1;
+            instance.setVotes(votes);
+            this.vote.set("Votes", votes);
+            saveConfig(this.voteFile, this.vote);
+            checkVoteParty(votes);
+        }
+
         if (player != null) {
             instance.getUser(player).addVotes();
             processVote(vote, votes);
@@ -63,14 +71,6 @@ public class PlayerVoteListener implements Listener, MessageUtils {
                     saveConfig(this.voteFile, this.vote);
                 }
             }
-        }
-
-        if (settings.getBoolean("Vote Party.Enabled") && (player != null || settings.getBoolean("Vote Party.Count Offline Votes"))) {
-            votes += 1;
-            instance.setVotes(votes);
-            this.vote.set("Votes", votes);
-            saveConfig(this.voteFile, this.vote);
-            checkVoteParty(votes);
         }
     }
 
