@@ -58,11 +58,10 @@ public class PlayerVoteListener implements Listener, MessageUtils {
                 if (this.vote.isSet("Vote." + vote.getUsername())) {
                     this.vote.set("Vote." + vote.getUsername(), this.vote.getInt("Vote." + vote.getUsername()) + 1);
                     saveConfig(this.voteFile, this.vote);
-                    return;
+                } else {
+                    this.vote.set("Vote." + vote.getUsername(), 1);
+                    saveConfig(this.voteFile, this.vote);
                 }
-
-                this.vote.set("Vote." + vote.getUsername(), 1);
-                saveConfig(this.voteFile, this.vote);
             }
         }
 
